@@ -407,10 +407,10 @@ $newline never
 $if isReq
   <div.switch>
     <label>
-      Ja
+      Nein
       <input type="checkbox" *{attrs} value=yes name=#{name} :showVal id val:checked>
       <span.lever />
-      Nein
+      Ja
 $else
   <p> 
     <input id=#{theId}-none *{attrs} type=radio name=#{name} value=none checked>
