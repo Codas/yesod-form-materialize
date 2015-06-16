@@ -209,8 +209,7 @@ matHtmlField l col = htmlField { fieldView = view }
         view theId name attrs val isReq = toWidget [hamlet|
 $newline never
 <div class="input-field #{colClass col}">
-  <textarea.materialize-textare
-  a :isReq:required="" id="#{theId}" name="#{name}" *{attrs}>#{showVal val}
+  <textarea.materialize-textarea :isReq:required="" id="#{theId}" name="#{name}" *{attrs}>#{showVal val}
   <label for="#{theId}">#{l}
 |]
 
