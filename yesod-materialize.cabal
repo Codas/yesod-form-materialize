@@ -1,0 +1,56 @@
+name:            yesod-materialize
+version:         0.0.1
+license:         MIT
+license-file:    LICENSE
+author:          Arne Link <mail@arne-link.de>
+maintainer:      Arne Link <mail@arne-link.de>
+synopsis:        Materialize form builder for yesod
+category:        Web, Yesod
+stability:       Experimental
+cabal-version:   >= 1.8
+build-type:      Simple
+description:     Materialize form builder for yesod
+extra-source-files: ChangeLog.md
+                    README.md
+
+flag network-uri
+  description: Get Network.URI from the network-uri package
+  default: True
+
+library
+    build-depends:   base                  >= 4        && < 5
+                   , yesod-core            >= 1.4      && < 1.5
+                   , yesod-form            >= 1.4      && < 1.5
+                   , yesod-persistent      >= 1.4      && < 1.5
+                   , time                  >= 1.1.4
+                   , shakespeare           >= 2.0
+                   , persistent
+                   , template-haskell
+                   , transformers          >= 0.2.2
+                   , data-default
+                   , xss-sanitize          >= 0.3.0.1
+                   , blaze-builder         >= 0.2.1.4
+                   , email-validate        >= 1.0
+                   , bytestring            >= 0.9.1.4
+                   , text                  >= 0.9
+                   , wai                   >= 1.3
+                   , containers            >= 0.2
+                   , blaze-html            >= 0.5
+                   , blaze-markup          >= 0.5.1
+                   , attoparsec            >= 0.10
+                   , byteable
+                   , aeson
+                   , resourcet
+                   , semigroups
+
+    if flag(network-uri)
+      build-depends: network-uri >= 2.6
+    else
+      build-depends: network < 2.6
+
+    exposed-modules: Yesod.Form.Materialize.Fields
+    ghc-options:     -Wall
+
+source-repository head
+  type:     git
+  location: https://github.com/Codas/yesod-materialize
