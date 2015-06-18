@@ -310,7 +310,7 @@ matSelectField :: (Eq a, RenderMessage site FormMessage)
 matSelectField handler l col = selectFieldHelper
     (\theId name attrs inside -> [whamlet|
 $newline never
-<div class="#{colClass col}">
+<div class="#{colClass col} input-field-margin">
   <label for="#{theId}">#{l}
   <select.browser-default ##{theId} name=#{name} *{attrs}>^{inside}
 |]) -- outside
@@ -326,17 +326,18 @@ $newline never
 
 -- | Creates a @\<select>@ tag for selecting multiple options.
 matMultiSelectFieldList :: (Eq a, RenderMessage site FormMessage, RenderMessage site msg)
-                        => [(msg, a)] -> Markup -> Field (HandlerT site IO) [a]
+                        => [(msg, a)] -> Markup -> ColSize -> Field (HandlerT site IO) [a]
 matMultiSelectFieldList opts = matMultiSelectField (optionsPairs opts)
 
 -- | Creates a @\<select>@ tag for selecting multiple options.
 matMultiSelectField :: (Eq a, RenderMessage site FormMessage)
-                    => HandlerT site IO (OptionList a) -> Markup -> Field (HandlerT site IO) [a]
-matMultiSelectField ioptlist l = (multiSelectField ioptlist) { fieldView = view }
-  where view theId name attrs val isReq = 
+                    => HandlerT site IO (OptionList a) -> Markup -> ColSize -> Field (HandlerT site IO) [a]
+matMultiSelectField ioptlist l col = (multiSelectField ioptlist) { fieldView = view }
+  where view theId name attrs val isReq =
             do opts <- fmap olOptions $ handlerToWidget ioptlist
                let selOpts = map (id &&& (optselected val)) opts
                [whamlet|
+                 <div class="#{colClass col} input-field-margin">
                    <label for="#{theId}">#{l}
                    <select.browser-default ##{theId} name=#{name} :isReq:required multiple *{attrs}>
                        $forall (opt, optsel) <- selOpts
