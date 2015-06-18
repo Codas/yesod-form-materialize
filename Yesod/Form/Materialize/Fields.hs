@@ -10,8 +10,8 @@
 module Yesod.Form.Materialize.Fields
        (matIntField
        ,matPasswordField
+       ,matPasswordConfirmField
        ,matTextField
-       ,matPasswordField
        ,matTextareaField
        ,matHiddenField
        ,matIntField
@@ -245,8 +245,29 @@ matPasswordField l col = passwordField { fieldView = view }
   where view theId name attrs val isReq = toWidget [hamlet|
 $newline never
 <div class="input-field #{colClass col}">
-  <input id="#{theId}" name="#{name}" *{attrs} type="password" :isReq:required="" value="#{either id id val}">
+  <input id=#{theId} name=#{name} *{attrs} type=password :isReq:required="" value=#{either id id val}>
+  <label for=#{theId}>#{l}
+|]
+
+
+matPasswordConfirmField :: Monad m
+                        => Markup -> ColSize -> Markup -> ColSize -> Field m Text
+matPasswordConfirmField l col lConf colConf = Field {fieldParse = parse
+                                                    ,fieldView = view 
+                                                    ,fieldEnctype = UrlEncoded}
+  where parse vals _ = case vals of
+                           [a, b]
+                               | a == b -> return (Right (Just a))
+                               | otherwise -> return (Left "Passwörter stimmen nicht überein")
+                           [] -> return (Right Nothing)
+                           _  -> return (Left "Passwörter stimmen nicht überein")
+        view theId name attrs val isReq = [whamlet|
+<div .input-field .#{colClass col}>
+  <input ##{theId} name=#{name} *{attrs} type=password :isReq:required="">
   <label for="#{theId}">#{l}
+<div .input-field .#{colClass colConf}>
+  <input id=#{theId}-confirm name=#{name} *{attrs} type=password :isReq:required="">
+  <label for=#{theId}-confirm>#{lConf}
 |]
 
 
