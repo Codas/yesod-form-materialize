@@ -23,7 +23,7 @@ module Yesod.Form.Materialize.Fields
        ,matMultiEmailField
        ,matUrlField
        ,matDoubleField
-       ,matBoolField
+       ,matSwitchField
        ,matCheckBoxField
        ,matFileField
        ,matSelectField
@@ -400,28 +400,17 @@ $newline never
 -- If this field is required, the first radio button is labeled \"Yes" and the second \"No". 
 --
 -- (Exact label titles will depend on localization).
-matBoolField :: Monad m => RenderMessage (HandlerSite m) FormMessage => Field m Bool
-matBoolField = boolField { fieldView = view }
+matSwitchField :: Monad m => RenderMessage (HandlerSite m) FormMessage => Field m Bool
+matSwitchField = boolField { fieldView  = view }
   where showVal = either (const False)
         view theId name attrs val isReq = [whamlet|
 $newline never
-$if isReq
   <div.switch>
     <label>
       Nein
       <input type="checkbox" *{attrs} value=yes name=#{name} :showVal id val:checked>
       <span.lever />
       Ja
-$else
-  <p> 
-    <input id=#{theId}-none *{attrs} type=radio name=#{name} value=none checked>
-    <label for=#{theId}-none>_{MsgSelectNone}
-  <p>
-    <input id=#{theId}-yes *{attrs} type=radio name=#{name} value=yes :showVal id val:checked>
-    <label for=#{theId}-yes>_{MsgBoolYes}
-  <p>
-    <input id=#{theId}-no *{attrs} type=radio name=#{name} value=no :showVal not val:checked>
-    <label for=#{theId}-no>_{MsgBoolNo}
 |]
 
 -- | Creates an input with @type="checkbox"@. 
