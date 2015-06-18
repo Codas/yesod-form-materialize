@@ -35,6 +35,7 @@ module Yesod.Form.Materialize.Fields
        ,matMultiSelectField
        ,matMultiSelectFieldList
        ,ColSize(..)
+       ,colClass
        ) where
 
 import Yesod.Form.Types
@@ -337,6 +338,7 @@ matMultiSelectField ioptlist l col = (multiSelectField ioptlist) { fieldView = v
             do opts <- fmap olOptions $ handlerToWidget ioptlist
                let selOpts = map (id &&& (optselected val)) opts
                [whamlet|
+                 $newline never
                  <div class="#{colClass col} input-field-margin">
                    <label for="#{theId}">#{l}
                    <select.browser-default ##{theId} name=#{name} :isReq:required multiple *{attrs}>
@@ -353,23 +355,25 @@ matRadioFieldList opts l = matRadioField (optionsPairs opts)
 
 -- | Creates an input with @type="checkbox"@ for selecting multiple options.
 matCheckboxesFieldList :: (Eq a, RenderMessage site FormMessage, RenderMessage site msg)
-                       => [(msg, a)] -> Field (HandlerT site IO) [a]
-matCheckboxesFieldList = matCheckboxesField . optionsPairs
+                       => [(msg, a)] -> ColSize -> Field (HandlerT site IO) [a]
+matCheckboxesFieldList opts = matCheckboxesField (optionsPairs opts)
 
 -- | Creates an input with @type="checkbox"@ for selecting multiple options.
 matCheckboxesField :: (Eq a, RenderMessage site FormMessage)
-                   => HandlerT site IO (OptionList a) -> Field (HandlerT site IO) [a]
-matCheckboxesField ioptlist =
+                   => HandlerT site IO (OptionList a) -> ColSize -> Field (HandlerT site IO) [a]
+matCheckboxesField ioptlist col =
     (multiSelectField ioptlist) { fieldView = view }
   where view theId name attrs val isReq =
             do opts <- fmap olOptions $ handlerToWidget ioptlist
                let optselected (Left _) _ = False
                    optselected (Right vals) opt = (optionInternalValue opt) `elem` vals
                [whamlet|
-$forall opt <- opts
-  <p>
-    <input id="#{theId}" type=checkbox name=#{name} value=#{optionExternalValue opt} *{attrs} :optselected val opt:checked>
-    <label for="#{theId}">#{optionDisplay opt}
+$newline never
+<div class="#{colClass col} input-field-margin">
+  $forall opt <- opts
+    <p>
+      <input id="#{theId}" type=checkbox name=#{name} value=#{optionExternalValue opt} *{attrs} :optselected val opt:checked>
+      <label for="#{theId}">#{optionDisplay opt}
 |]
         
 -- | Creates an input with @type="radio"@ for selecting one option.
@@ -400,11 +404,15 @@ $newline never
 -- If this field is required, the first radio button is labeled \"Yes" and the second \"No". 
 --
 -- (Exact label titles will depend on localization).
-matSwitchField :: Monad m => RenderMessage (HandlerSite m) FormMessage => Field m Bool
-matSwitchField = boolField { fieldView  = view }
+matSwitchField :: Monad m => RenderMessage (HandlerSite m) FormMessage
+               => Markup -> ColSize -> Field m Bool
+matSwitchField l col = boolField { fieldView  = view }
   where showVal = either (const False)
         view theId name attrs val isReq = [whamlet|
 $newline never
+<div.input-field-margin class=#{colClass col}>
+  <p>
+    <label>#{l}
   <div.switch>
     <label>
       Nein

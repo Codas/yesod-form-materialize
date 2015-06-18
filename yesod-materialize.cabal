@@ -1,5 +1,5 @@
 name:            yesod-materialize
-version:         0.0.5
+version:         0.0.6
 license:         MIT
 license-file:    LICENSE
 author:          Arne Link <mail@arne-link.de>
@@ -48,7 +48,8 @@ library
     else
       build-depends: network < 2.6
 
-    exposed-modules: Yesod.Form.Materialize.Fields
+    exposed-modules: Yesod.Form.Materialize
+                     Yesod.Form.Materialize.Fields
     ghc-options:     -Wall
 
 source-repository head
